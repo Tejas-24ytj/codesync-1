@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codesync-backend-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codesync-backend
+  template:
+    metadata:
+      labels:
+        app: codesync-backend
+    spec:
+      containers:
+      - name: codesync-backend
+        image: tejas24l/codesync-backend
+        ports:
+        - containerPort: 3000 # Port your app is listening on inside the container
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: codesync-backend-service
+spec:
+  selector:
+    app: codesync-backend
+  ports:
+    - protocol: TCP
+      port: 80           # Port on which the service will be exposed
+      targetPort: 3000    # Port your app is listening on inside the container
+  type: ClusterIP   # Service type ClusterIP (default) for internal access
