@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: codesync-client-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: codesync-client
+  template:
+    metadata:
+      labels:
+        app: codesync-client
+    spec:
+      containers:
+      - name: codesync-client
+        image: tejas24l/codesync-client
+        ports:
+        - containerPort: 5173  # The port the frontend listens on inside the container
+        env:
+        - name: VITE_BACKEND_URL
+          value: "http://localhost:3000/"  # The backend URL, replace with appropriate external address if needed
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: codesync-client-service
+spec:
+  selector:
+    app: codesync-client
+  ports:
+    - protocol: TCP
+      port: 80           # The port on which the service will be exposed
+      targetPort: 5173    # The port your app is listening on inside the container
+  type: ClusterIP   # Service type ClusterIP for internal access (adjust if external access is needed)
